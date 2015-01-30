@@ -26,6 +26,7 @@ credentials = SignedJwtAssertionCredentials(
     '729313260996-tlhkhmc5mk9b02la7a5vnae548tobl8m@developer.gserviceaccount.com',
     key,
     scope='https://www.googleapis.com/auth/calendar')
+# 5s timeout for caldendar deleting and inserting
 http = httplib2.Http(timeout=5)
 http = credentials.authorize(http)
 

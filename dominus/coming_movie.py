@@ -40,8 +40,6 @@ class ComingMovieHandler(webapp2.RequestHandler):
         # headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.114 Safari/537.36'}
         # req=urllib2.Request(url,headers=headers)
         try:
-            # response = urllib2.urlopen(douban_url, timeout=15).read()
-
             # prevent error "Deadline exceeded while waiting for HTTP response from URL"
             urlfetch.set_default_fetch_deadline(120)
             response = urlfetch.fetch(douban_url)
@@ -70,8 +68,6 @@ class ComingMovieHandler(webapp2.RequestHandler):
         html_tr_movies = html_tbody[0].getchildren()
         assert len(html_tr_movies) > 0 and html_tr_movies[0].tag == "tr"
         logging.info("total coming movies: " + str(len(html_tr_movies)))
-
-        # httplib2.Http().
 
         # clear all events in target calendar
         self.clear_calendar()
@@ -123,6 +119,8 @@ class ComingMovieHandler(webapp2.RequestHandler):
             else:
                 logging.warning("total created movie event: %s/%s", total_movies, success_event)
 
+            self.retry_timeout_request()
+
         except Exception:
             logging.error("error to parse movie content from tbody/tr/td\n" + traceback.format_exc())
 
@@ -156,7 +154,6 @@ class ComingMovieHandler(webapp2.RequestHandler):
 
     # vcl68tom0updk2nfnf8pjqce0c@group.calendar.google.com
     doubanCalendarId = "vcl68tom0updk2nfnf8pjqce0c@group.calendar.google.com"
-
     def clear_calendar(self):
 
         service = get_google_calendar_service()
@@ -192,6 +189,9 @@ class ComingMovieHandler(webapp2.RequestHandler):
                         service.events().delete(calendarId=self.doubanCalendarId, eventId=event['id']).execute()
                     except:
                         logging.warning("clear movie event failed: %s \n" + traceback.format_exc(), event['summary'])
+                        self.retry_list.append(
+                            {"action": "delete", "summary": (event['summary'] if 'summary' in event else "(No Title)"),
+                             "eventId": event['id'], "retryCount": 0})
                         continue
                     clear_count += 1
                 page_token = events.get('nextPageToken')
@@ -221,6 +221,40 @@ class ComingMovieHandler(webapp2.RequestHandler):
             logging.debug("creating movie calendar event success: " + created_event['id'] + "_" + kwargs["movie_name"])
         except:
             logging.error("creating movie calendar event failed\n %s\n" + traceback.format_exc(), kwargs["movie_name"])
+            self.retry_list.append({"action": "insert", "calendarId": self.doubanCalendarId,
+                                    "body": event, "retryCount": 0})
             return False
 
         return True
+
+    retry_list = []
+    # retry timeout request for delete/insert action
+
+    def retry_timeout_request(self):
+        service = get_google_calendar_service()
+        if service is None: return None
+
+        logging.info("total retry request: " + len(self.retry_list))
+        while len(self.retry_list) != 0:
+            action = self.retry_list[len(self.retry_list) - 1]
+            action["retryCount"] = action["retryCount"] + 1
+            if action["action"] == "delete":
+                logging.debug("retrying delete event: %s_%s_retryCount:%s", action['summary'], action['id'],
+                              action["retryCount"])
+                try:
+                    service.events().delete(calendarId=self.doubanCalendarId, eventId=action["eventId"]).execute()
+                except:
+                    logging.warning("deleting movie event failed: %s \n" + traceback.format_exc(),
+                                    action['summary'])
+                    continue
+                self.retry_list.pop()
+            elif action["action"] == "insert":
+                logging.debug("retrying insert event: %s_retryCount:%s", action['body']['summary'], action["retryCount"])
+                try:
+                    service.events().insert(calendarId=self.doubanCalendarId, body=action['body']).execute()
+                except:
+                    logging.warning("inserting movie event failed: %s \n" + traceback.format_exc(),
+                                    action['summary'])
+                    continue
+                self.retry_list.pop()
+        logging.info("all retry request finished.....")
