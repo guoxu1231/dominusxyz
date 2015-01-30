@@ -1,0 +1,4 @@
+cron:
+- description: daily refreshing douban movie job
+  url: /coming_movie
+  schedule: every 24 hours
