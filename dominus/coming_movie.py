@@ -119,10 +119,10 @@ class ComingMovieHandler(webapp2.RequestHandler):
             else:
                 logging.warning("total created movie event: %s/%s", total_movies, success_event)
 
-            self.retry_timeout_request()
-
         except Exception:
             logging.error("error to parse movie content from tbody/tr/td\n" + traceback.format_exc())
+
+        self.retry_timeout_request()
 
         self.response.write("")
 
@@ -234,12 +234,12 @@ class ComingMovieHandler(webapp2.RequestHandler):
         service = get_google_calendar_service()
         if service is None: return None
 
-        logging.info("total retry request: " + len(self.retry_list))
+        logging.info("total retry request: " + str(len(self.retry_list)))
         while len(self.retry_list) != 0:
             action = self.retry_list[len(self.retry_list) - 1]
             action["retryCount"] = action["retryCount"] + 1
             if action["action"] == "delete":
-                logging.debug("retrying delete event: %s_%s_retryCount:%s", action['summary'], action['id'],
+                logging.debug("retrying delete event: %s_%s_retryCount:%s", action['summary'], action['eventId'],
                               action["retryCount"])
                 try:
                     service.events().delete(calendarId=self.doubanCalendarId, eventId=action["eventId"]).execute()
