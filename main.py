@@ -17,6 +17,10 @@
 import webapp2
 
 from dominus.coming_movie import ComingMovieHandler
+from dominus.gae.image_upload import UploadForm
+from dominus.gae.image_upload import UploadHandler
+from dominus.gae.image_upload import ServeHandler
+
 
 
 class MainHandler(webapp2.RequestHandler):
@@ -27,5 +31,8 @@ class MainHandler(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
-    ('/coming_movie', ComingMovieHandler)
+    ('/coming_movie', ComingMovieHandler),
+    ('/gae/upload_form', UploadForm),
+    ('/gae/upload', UploadHandler),
+    ('/gae/serve/([^/]+)?', ServeHandler)
 ], debug=True)
