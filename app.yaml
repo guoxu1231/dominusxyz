@@ -12,6 +12,9 @@ handlers:
 - url: /js/plupload
   static_dir: static/plupload-2.1.2
 
+- url: /js/fullcalendar
+  static_dir: static/fullcalendar-2.2.6
+
 - url: /coming_movie
   script: main.app
   login: admin
