@@ -9,8 +9,14 @@ handlers:
   static_files: favicon.ico
   upload: favicon\.ico
 
+- url: /www
+  static_dir: static/www
+
 - url: /js/plupload
   static_dir: static/plupload-2.1.2
+
+- url: /js/jfu
+  static_dir: static/jQuery-File-Upload-9.9.2
 
 - url: /js/fullcalendar
   static_dir: static/fullcalendar-2.2.6
