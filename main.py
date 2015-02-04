@@ -21,6 +21,9 @@ from dominus.gae.image_upload import UploadForm
 from dominus.gae.image_upload import UploadHandler
 from dominus.gae.image_upload import ServeHandler
 from dominus.gae.image_upload_pld import FileUploadFormHandler
+from dominus.gae.image_upload_pld import AjaxSuccessHandler
+from dominus.gae.image_upload_pld import GenerateUploadUrlHandler
+from dominus.gae.image_upload_pld import FileUploadHandler
 from dominus.gae.jinja_test import MainPage
 
 
@@ -30,13 +33,15 @@ class MainHandler(webapp2.RequestHandler):
         self.response.write('Hello world!')
 
 
-
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/coming_movie', ComingMovieHandler),
     ('/gae/upload_form', UploadForm),
     ('/gae/upload', UploadHandler),
-    ('/gae/serve/([^/]+)?', ServeHandler),
+    ('/gae/serve/([^/]+)?', ServeHandler),  # basic upload
+    ('/gae/jinja', MainPage),               # jinja templating
     ('/gae/upload_form_pld', FileUploadFormHandler),
-    ('/gae/jinja', MainPage)
+    ('/gae/image_upload_pld', FileUploadHandler),
+    ('/gae/file/([0-9]+)/success', AjaxSuccessHandler),
+    ('/gae/generate_upload_url', GenerateUploadUrlHandler)  # plupload
 ], debug=True)
