@@ -124,9 +124,8 @@
 /*global window, $ */
 $(function () {
     'use strict';
-    // Change this to the location of your server-side upload handler:
-    var url = window.location.hostname === 'blueimp.github.io' ?
-                '//jquery-file-upload.appspot.com/' : 'server/php/',
+    // Change this to the location of your server-side upload handler: TODO
+    var url = '/gae/upload_jfu',
         uploadButton = $('<button/>')
             .addClass('btn btn-primary')
             .prop('disabled', true)
