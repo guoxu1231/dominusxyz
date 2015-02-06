@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Bootstrap Plugins</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style type="text/css">
+        .scrollspy-example{
+          position:relative;
+          height:200px;
+          margin-top:10px;
+          overflow:auto}
+    </style>
+
+  </head>
+  <body>
+      <div class="container">
+        <!-- Dropdown -->
+        <div class="dropdown">
+            <a data-toggle="dropdown" data-target="#" href="http://www.google.com">
+                Dropdown <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a href="#">Link 1</a></li>
+                <li><a href="#">Link 2</a></li>
+                <li><a href="#">Link 3</a></li>
+                <li><a href="#">Link 4</a></li>
+            </ul>
+        </div>
+
+        <br>
+
+        <!-- Dropdown with pills -->
+        <ul class="nav nav-pills">
+          <li class="active"><a href="#">Home</a></li>
+          <li class="dropdown">
+                <a data-toggle="dropdown" data-target="#" href="http://www.google.com">
+                    Profile <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a href="#">Link 1</a></li>
+                    <li><a href="#">Link 2</a></li>
+                    <li><a href="#">Link 3</a></li>
+                    <li><a href="#">Link 4</a></li>
+                </ul>
+          </li>
+          <li><a href="#">Messages</a></li>
+        </ul>
+
+        <br>
+
+        <!-- dropdown with JavaScript events -->
+        <div class="dropdown" id="myDropdown">
+            <a class="myDropdownHandle" data-toggle="dropdown" data-target="#" href="#">
+                Dropdown <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a href="#">Link 1</a></li>
+                <li><a href="#">Link 2</a></li>
+                <li><a href="#">Link 3</a></li>
+                <li><a href="#">Link 4</a></li>
+            </ul>
+        </div>
+
+        <br>
+
+        <!-- Alert  -->
+        <div class="alert alert-success">
+            Amount has been transferred successfully.
+        </div>
+
+        <!-- Dismissible Alert -->
+        <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            Amount has been transferred successfully.
+        </div>
+
+        <br>
+
+        <!-- Toggle Button -->
+        <button type="button" class="btn btn-lg btn-default" data-toggle="button">Toggle Me!</button>
+
+        <br><br>
+
+        <!-- Checkbox Buttons -->
+        <div class="btn-group" data-toggle="buttons">
+            <label class="btn btn-default">
+                <input type="checkbox"> Option 1
+            </label>
+            <label class="btn btn-default">
+                <input type="checkbox"> Option 2
+            </label>
+            <label class="btn btn-default">
+                <input type="checkbox"> Option 3
+            </label>
+        </div>
+
+        <br><br>
+
+        <!-- Radio Buttons -->
+        <div class="btn-group" data-toggle="buttons">
+            <label class="btn btn-info">
+                <input type="radio" name="options"> Option 1
+            </label>
+            <label class="btn btn-info">
+                <input type="radio" name="options"> Option 2
+            </label>
+            <label class="btn btn-info">
+                <input type="radio" name="options"> Option 3
+            </label>
+        </div>
+
+        <br><br>
+
+        <!-- Bootstrap Scrollspy -->
+
+        <nav id="navbarExample" class="navbar navbar-default" role="navigation">
+          <div class="container-fluid">
+            <div class="navbar-header">
+              <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbarLinks">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#">SitePoint</a>
+            </div>
+            <div class="collapse navbar-collapse navbarLinks">
+              <ul class="nav navbar-nav">
+                <li class="active"><a href="#home">Home</a></li>
+                <li class=""><a href="#about">About</a></li>
+                <li class=""><a href="#contact">Contact Us</a></li>
+                <li class=""><a href="#map">Map</a></li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+        <div data-spy="scroll" data-target="#navbarExample" data-offset="0" class="scrollspy-example">
+
+            <h4 id="Home">Home</h4>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+            <h4 id="about">About</h4>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+            <h4 id="contact">Contact Us</h4>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+            <h4 id="map">Map</h4>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+
+        </div>
+
+        <br><br>
+
+        <!-- Bootstrap Tabs -->
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs">
+          <li class="active"><a href="#home" data-toggle="tab">Home</a></li>
+          <li><a href="#profile" data-toggle="tab">Profile</a></li>
+          <li><a href="#messages" data-toggle="tab">Messages</a></li>
+          <li><a href="#settings" data-toggle="tab">Settings</a></li>
+        </ul>
+        <!-- Tab panes -->
+        <div class="tab-content">
+            <div class="tab-pane active" id="home">
+                  <h3>The home</h3>
+            </div>
+            <div class="tab-pane" id="profile">
+                  <h3>The profile</h3>
+            </div>
+            <div class="tab-pane" id="messages">
+                  <h3>Messages central</h3>
+            </div>
+            <div class="tab-pane" id="settings">
+                  <h3>Setting panel</h3>
+            </div>
+        </div>
+
+        <br><br>
+
+        <!-- Bootstrap Collapse -->
+        <div class="panel-group" id="accordion">
+
+            <!-- Panel 1 -->
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                    Collapsible Group Item #1
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseOne" class="panel-collapse collapse in">
+                  <div class="panel-body">
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                  </div>
+              </div>
+            </div>
+
+            <!-- Panel 2 -->
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                    Collapsible Group Item #2
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseTwo" class="panel-collapse ">
+                  <div class="panel-body">
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                  </div>
+              </div>
+            </div>
+
+            <!-- Panel 3 -->
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                    Collapsible Group Item #3
+                  </a>
+                </h4>
+              </div>
+              <div id="collapseThree" class="panel-collapse collapse">
+                  <div class="panel-body">
+                      Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                  </div>
+              </div>
+            </div>
+          </div>
+
+          <br><br>
+
+          <!-- Tooltip -->
+          <button type="button" class="btn btn-default tooltipButton" data-toggle="tooltip" data-placement="bottom" title="I am a Bootstrap button">Who am I?</button>
+
+          <br><br>
+
+          <!-- Popover -->
+          <button type="button" class="btn btn-danger popoverButton" data-toggle="popover" data-placement="bottom" data-content="Lorem Ipsum Donor." title="This is a demo popover">
+            Click Me!
+          </button>
+
+          <br><br>
+
+          <!-- Bootstrap Carousel -->
+          <div id="bestCarsCarousel" class="carousel slide" data-ride="carousel">
+
+              <!-- Indicators -->
+              <ol class="carousel-indicators">
+                  <li data-target="#bestCarsCarousel" data-slide-to="0" class="active"></li>
+                  <li data-target="#bestCarsCarousel" data-slide-to="1"></li>
+                  <li data-target="#bestCarsCarousel" data-slide-to="2"></li>
+              </ol>
+
+              <!-- Wrapper for slides -->
+              <div class="carousel-inner">
+                  <div class="item active">
+                      <img src="images/car1.jpg">
+                      <div class="carousel-caption">
+                          <h3>Car 1</h3>
+                          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                      </div>
+                  </div>
+
+                  <div class="item">
+                      <img src="images/car2.jpg">
+                      <div class="carousel-caption">
+                          <h3>Car 2</h3>
+                          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                      </div>
+                  </div>
+
+                  <div class="item">
+                      <img src="images/car3.jpg">
+                      <div class="carousel-caption" >
+                          <h3>Car 3</h3>
+                          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+                      </div>
+                  </div>
+              </div>
+
+              <!-- Controls -->
+              <a class="left carousel-control" href="#bestCarsCarousel" data-slide="prev">
+                  <span class="glyphicon glyphicon-chevron-left"></span>
+              </a>
+              <a class="right carousel-control" href="#bestCarsCarousel" data-slide="next">
+                  <span class="glyphicon glyphicon-chevron-right"></span>
+              </a>
+          </div>
+
+          <br><br>
+
+          <!-- Modal Handle -->
+          <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+            Launch modal
+          </button>
+      </div>
+
+      <!-- Modal Markup kept out of all the div elements -->
+      <div class="modal fade" id="myModal">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <!-- Modal Header -->
+                  <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                      <h4 class="modal-title">Welcome Back!</h4>
+                  </div>
+                  <!-- Modal Body -->
+                  <div class="modal-body">
+                      <h1>Hello Readers!</h1>
+                  </div>
+                  <!-- Modal Footer -->
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                      <button type="button" class="btn btn-primary">Save changes</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+      <script src="js/jquery.js"></script>
+      <script src="js/bootstrap.js"></script>
+      <script type="text/javascript">
+        $(document).ready(function(){
+
+            $('#myDropdown').on('show.bs.dropdown', function () {
+               console.log("Opening dropdown..");
+            });
+
+            $('#myDropdown').on('shown.bs.dropdown', function () {
+               console.log("Dropdown opened..");
+            });
+
+            $('#myDropdown').on('hide.bs.dropdown', function () {
+               console.log("Hiding dropdown..");
+            });
+
+            $('#myDropdown').on('hidden.bs.dropdown', function () {
+               console.log("Dropdown hidden..");
+            });
+
+            $('.collapse').collapse({
+                    toggle: false
+            });
+
+            $('.tooltipButton').tooltip();
+
+            $('.popoverButton').popover(); 
+        });
+    </script>
+  </body>
+</html>
