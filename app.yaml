@@ -24,6 +24,9 @@ handlers:
 - url: /js/fullcalendar
   static_dir: static/fullcalendar-2.2.6
 
+- url: /js/spbook_bootstrap
+  static_dir: static/jsbootstrap1
+
 - url: /coming_movie
   script: main.app
   login: admin
