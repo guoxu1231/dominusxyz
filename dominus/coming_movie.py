@@ -188,7 +188,8 @@ class ComingMovieHandler(webapp2.RequestHandler):
                     try:
                         service.events().delete(calendarId=self.doubanCalendarId, eventId=event['id']).execute()
                     except:
-                        logging.warning("clear movie event failed: %s \n" + traceback.format_exc(), event['summary'])
+                        #logging.warning("clear movie event failed: %s \n" + traceback.format_exc(), event['summary'])
+                        logging.warning("clear movie event failed: %s" % event['summary'])
                         self.retry_list.append(
                             {"action": "delete", "summary": (event['summary'] if 'summary' in event else "(No Title)"),
                              "eventId": event['id'], "retryCount": 0})
@@ -220,7 +221,8 @@ class ComingMovieHandler(webapp2.RequestHandler):
                                                                     body=event).execute()
             logging.debug("creating movie calendar event success: " + created_event['id'] + "_" + kwargs["movie_name"])
         except:
-            logging.error("creating movie calendar event failed\n %s\n" + traceback.format_exc(), kwargs["movie_name"])
+            #logging.error("creating movie calendar event failed\n %s\n" + traceback.format_exc(), kwargs["movie_name"])
+            logging.warning("creating movie calendar event failed %s" % kwargs["movie_name"])
             self.retry_list.append({"action": "insert", "calendarId": self.doubanCalendarId,
                                     "body": event, "retryCount": 0})
             return False
@@ -254,7 +256,7 @@ class ComingMovieHandler(webapp2.RequestHandler):
                     service.events().insert(calendarId=self.doubanCalendarId, body=action['body']).execute()
                 except:
                     logging.warning("inserting movie event failed: %s \n" + traceback.format_exc(),
-                                    action['summary'])
+                                    action['body']['summary'])
                     continue
                 self.retry_list.pop()
         logging.info("all retry request finished.....")
