@@ -2,3 +2,6 @@ cron:
 - description: daily refreshing douban movie job
   url: /coming_movie
   schedule: every 24 hours
+- description: mongolab heartbeat
+  url: /mongolab_heartbeat
+  schedule: every 5 minutes

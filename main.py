@@ -26,6 +26,7 @@ from dominus.gae.image_upload_pld import FileUploadHandler
 from dominus.gae.jinja_test import MainPage
 import dominus.gae.image_upload_jfu
 import dominus.gae.image_upload
+from dominus.mongolab.mongolab_heartbeat import MongolabHeartbeatHandler
 
 
 class MainHandler(webapp2.RequestHandler):
@@ -35,6 +36,7 @@ class MainHandler(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
+    ('/mongolab_heartbeat', MongolabHeartbeatHandler),
     ('/coming_movie', ComingMovieHandler),
     ('/gae/upload_form', UploadForm),
     ('/gae/upload', dominus.gae.image_upload.UploadHandler),
