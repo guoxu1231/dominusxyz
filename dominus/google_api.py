@@ -31,6 +31,10 @@ http = httplib2.Http(timeout=5)
 http = credentials.authorize(http)
 
 
+# vcl68tom0updk2nfnf8pjqce0c@group.calendar.google.com
+DOUBAN_CALENDAR_ID = "vcl68tom0updk2nfnf8pjqce0c@group.calendar.google.com"
+
+
 def get_google_calendar_service():
     # Build a service object for interacting with the API. Visit
     # the Google Developers Console

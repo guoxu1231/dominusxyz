@@ -187,9 +187,9 @@ class ComingMovieHandler(webapp2.RequestHandler):
                                   event['id'])
                     try:
                         service.events().delete(calendarId=self.doubanCalendarId, eventId=event['id']).execute()
-                    except:
+                    except BaseException as ex:
                         #logging.warning("clear movie event failed: %s \n" + traceback.format_exc(), event['summary'])
-                        logging.warning("clear movie event failed: %s" % event['summary'])
+                        logging.warning("clear movie event failed: %s caused by %s" % (event['summary'], ex))
                         self.retry_list.append(
                             {"action": "delete", "summary": (event['summary'] if 'summary' in event else "(No Title)"),
                              "eventId": event['id'], "retryCount": 0})
@@ -220,9 +220,9 @@ class ComingMovieHandler(webapp2.RequestHandler):
             created_event = google_calendar_service.events().insert(calendarId=self.doubanCalendarId,
                                                                     body=event).execute()
             logging.debug("creating movie calendar event success: " + created_event['id'] + "_" + kwargs["movie_name"])
-        except:
+        except BaseException as ex:
             #logging.error("creating movie calendar event failed\n %s\n" + traceback.format_exc(), kwargs["movie_name"])
-            logging.warning("creating movie calendar event failed %s" % kwargs["movie_name"])
+            logging.warning("creating movie calendar event failed %s caused by %s" % (kwargs["movie_name"], ex))
             self.retry_list.append({"action": "insert", "calendarId": self.doubanCalendarId,
                                     "body": event, "retryCount": 0})
             return False
