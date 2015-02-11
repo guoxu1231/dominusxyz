@@ -17,6 +17,9 @@
 import webapp2
 
 from dominus.coming_movie import ComingMovieHandler
+from dominus.coming_movie_v2 import DeleteEventHandler
+from dominus.coming_movie_v2 import InsertEventHandler
+from dominus.coming_movie_v2 import ComingMovieV2Handler
 from dominus.gae.image_upload import UploadForm
 from dominus.gae.image_upload import ServeHandler
 from dominus.gae.image_upload_pld import FileUploadFormHandler
@@ -36,6 +39,9 @@ class MainHandler(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
+    ('/coming_movie_v2', ComingMovieV2Handler),
+    ('/coming_movie_v2/delete', DeleteEventHandler),
+    ('/coming_movie_v2/insert', InsertEventHandler),
     ('/mongolab_heartbeat', MongolabHeartbeatHandler),
     ('/coming_movie', ComingMovieHandler),
     ('/gae/upload_form', UploadForm),

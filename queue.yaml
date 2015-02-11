@@ -1,0 +1,11 @@
+queue:
+- name: MovieDeleteQueue
+  rate: 1/s
+  mode: push
+  retry_parameters:
+    task_retry_limit: 3
+- name: MovieInsertQueue
+  rate: 1/s
+  mode: push
+  retry_parameters:
+    task_retry_limit: 3

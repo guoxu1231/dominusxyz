@@ -31,6 +31,10 @@ handlers:
   script: main.app
   login: admin
 
+- url: /coming_movie_v2
+  script: main.app
+  login: admin
+
 - url: .*
   script: main.app
 
