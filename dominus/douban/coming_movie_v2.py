@@ -11,6 +11,7 @@ from lxml import etree
 from google.appengine.api import taskqueue
 from dominus.google_api import get_google_calendar_service
 from dominus.google_api import DOUBAN_CALENDAR_ID
+from dominus.douban.tag_traversal import link_enqueue
 
 
 # ComingMovieV2Handler
@@ -72,10 +73,11 @@ class ComingMovieV2Handler(webapp2.RequestHandler):
         success_event = 0
         total_movies = len(html_tr_movies)
         try:
-            for movie_tr in html_tr_movies:
+            for movie_tr in html_tr_movies:   # XML Element Object
                 html_td_list_movie = movie_tr.getchildren()
                 movie_date = html_td_list_movie[0].text.encode('utf-8').strip()
                 movie_name = html_td_list_movie[1].getchildren()[0].text.encode('utf-8').strip()
+                movie_link = html_td_list_movie[1].getchildren()[0].get('href')
                 movie_category = html_td_list_movie[2].text.encode('utf-8').strip()
                 movie_location = html_td_list_movie[3].text.encode('utf-8').strip()
 
@@ -91,6 +93,8 @@ class ComingMovieV2Handler(webapp2.RequestHandler):
                                            day_confirmed=self.DAY_CODE in movie_date, total_event=total_movies,
                                            nth_event=success_event):
                     success_event += 1
+
+                link_enqueue("movie", movie_link)
 
                 self.response.write(new_movie_date)
                 self.response.write("        ")
@@ -142,8 +146,6 @@ class ComingMovieV2Handler(webapp2.RequestHandler):
     def clear_calendar(self):
 
         service = get_google_calendar_service()
-        if service is None:
-            return False
 
         nth_event = 0
         total_event = 0
@@ -170,7 +172,7 @@ class ComingMovieV2Handler(webapp2.RequestHandler):
 
                 for event in events['items']:
                     try:
-                        taskqueue.add(queue_name='MovieDeleteQueue', url='/coming_movie_v2/delete',
+                        taskqueue.add(queue_name='MovieDeleteQueue', url='/calendar/delete',
                                       params={'event': json.dumps(event), "total_event": total_event, "nth_event": nth_event})
                     except BaseException as ex:
                         logging.warning("push %s to [MovieDeleteQueue] failed: %s" % (event['summary'], ex))
@@ -195,7 +197,7 @@ class ComingMovieV2Handler(webapp2.RequestHandler):
             'end': {'date': str(kwargs["movie_date"])}
         }
         try:
-            taskqueue.add(queue_name='MovieInsertQueue', url='/coming_movie_v2/insert',
+            taskqueue.add(queue_name='MovieInsertQueue', url='/calendar/insert',
                           params={'event': json.dumps(event), "total_event": kwargs["total_event"],
                                   "nth_event": kwargs["nth_event"]})
         except BaseException as ex:
@@ -212,7 +214,7 @@ class DeleteEventHandler(webapp2.RequestHandler):
         # payload
         event = json.loads(self.request.get('event'))
         total_event = self.request.get('total_event')
-        nth_event = self.request.get('nth_event')
+        nth_event = int(self.request.get('nth_event')) + 1
         # noinspection PyBroadException
         try:
             service.events().delete(calendarId=DOUBAN_CALENDAR_ID, eventId=event['id']).execute()
@@ -224,7 +226,6 @@ class DeleteEventHandler(webapp2.RequestHandler):
             self.response.status = 500  # 500 Internal Server Error, Retry the task
 
 
-
 class InsertEventHandler(webapp2.RequestHandler):
     def post(self):
         google_calednar_service = get_google_calendar_service()
@@ -232,7 +233,7 @@ class InsertEventHandler(webapp2.RequestHandler):
         # payload
         event = json.loads(self.request.get('event'))
         total_event = self.request.get('total_event')
-        nth_event = self.request.get('nth_event')  #TODO not precise
+        nth_event = int(self.request.get('nth_event')) + 1
 
         # noinspection PyBroadException
         try:
