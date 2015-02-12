@@ -30,6 +30,7 @@ from dominus.gae.jinja_test import MainPage
 import dominus.gae.image_upload_jfu
 import dominus.gae.image_upload
 from dominus.mongolab.mongolab_heartbeat import MongolabHeartbeatHandler
+from dominus.douban.douban_entity import NDBStoreHandler
 
 
 class MainHandler(webapp2.RequestHandler):
@@ -44,6 +45,7 @@ app = webapp2.WSGIApplication([
     ('/coming_movie_v2/insert', InsertEventHandler),
     ('/mongolab_heartbeat', MongolabHeartbeatHandler),
     ('/coming_movie', ComingMovieHandler),
+    ('/gae/ndb', NDBStoreHandler),
     ('/gae/upload_form', UploadForm),
     ('/gae/upload', dominus.gae.image_upload.UploadHandler),
     ('/gae/upload_jfu', dominus.gae.image_upload_jfu.UploadHandler),
