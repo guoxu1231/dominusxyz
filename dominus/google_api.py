@@ -30,19 +30,24 @@ credentials = SignedJwtAssertionCredentials(
 http = httplib2.Http(timeout=5)
 http = credentials.authorize(http)
 
-
 # vcl68tom0updk2nfnf8pjqce0c@group.calendar.google.com
 DOUBAN_CALENDAR_ID = "vcl68tom0updk2nfnf8pjqce0c@group.calendar.google.com"
+GOOGLE_CALENDAR_SERVICE = None  # initialize & cache expensive service instance
 
-
+# TODO Frequently Refreshing access_token
 def get_google_calendar_service():
+    global GOOGLE_CALENDAR_SERVICE
     # Build a service object for interacting with the API. Visit
     # the Google Developers Console
     # to get a developerKey for your own application.
-    try:
-        service = build(serviceName='calendar', version='v3', http=http)
-        google_calendar_service = service
-    except:
-        logging.error("get google calendar service api failed\n" + traceback.format_exc())
-    logging.info("get google calendar service api success")
-    return service
+    if GOOGLE_CALENDAR_SERVICE is None:
+        try:
+            GOOGLE_CALENDAR_SERVICE = build(serviceName='calendar', version='v3', http=http)
+            logging.info("build google calendar service api success %s" % GOOGLE_CALENDAR_SERVICE)
+        except BaseException as ex:
+            logging.error("build google calendar service api failed %s" % ex)
+
+    assert GOOGLE_CALENDAR_SERVICE is not None
+    return GOOGLE_CALENDAR_SERVICE
+
+
