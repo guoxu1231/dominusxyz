@@ -9,10 +9,7 @@ from dominus.douban.douban_entity import DoubanResourceURL
 from dominus.douban.douban_entity import DoubanMovie
 import re
 
-
-# TODO travese MOVIE/BOOK/MUSIC
-
-MOCK_IE_HTTP_HEADER = {}
+MOCK_IE_HTTP_HEADER = {}  # TODO
 HTTP_TIMIOUT = 20  # 20 seconds
 
 
@@ -39,15 +36,16 @@ class TagEntryHandler(webapp2.RequestHandler):
         tag_entry_url = self.request.get('tag_entry_url')
         debug = bool(self.request.get('debug'))  # anything True, blank char False
 
-        debug = True  # add debug mode
+        # debug = True  # add debug mode
         debug_url = "http://movie.douban.com/tag/%E7%A7%91%E5%B9%BB"
-
         url = None
         if debug:
             kind = "movie"
             url = debug_url
         else:
             url = tag_entry_url
+
+        assert debug_url or (kind != "" and tag_entry_url != "")
 
         try:
             response = requests.get(url, headers=MOCK_IE_HTTP_HEADER, timeout=HTTP_TIMIOUT)
@@ -72,7 +70,7 @@ class TagEntryHandler(webapp2.RequestHandler):
                 # find out max start in paginator url
                 for tag_url in tag_url_list:
                     start_list.append(int(re.search('start=(\d+)&type=T', tag_url).group(1)))
-                max_start = max(start_list)
+                max_start = max(start_list)  # key parameter for following logic
             except BaseException as e:
                 logging.error(e)
                 self.response.status = 500
@@ -87,7 +85,8 @@ class TagEntryHandler(webapp2.RequestHandler):
                                   params={"kind": kind,
                                           "tag_url": tag_url})
                 except BaseException as ex:
-                    logging.error("push %s to [DoubanTagQueue] failed: %s" % (tag_url, ex))  # TODO is it possible in GAE?
+                    logging.error(
+                        "push %s to [DoubanTagQueue] failed: %s" % (tag_url, ex))  # TODO is it possible in GAE?
                     continue
                 total += 1
 
@@ -107,8 +106,6 @@ class TagEntryHandler(webapp2.RequestHandler):
             logging.error("get douban url %s failed (status_code=%s)" % (url, response.status_code))
             self.response.status = 500  # 500 Internal Server Error, Retry the task
             return
-
-        print 'he'
 
 
 class CleanupHandler(webapp2.RequestHandler):
@@ -141,17 +138,16 @@ class TagURLHandler(webapp2.RequestHandler):
         tag_url_2 = self.request.get('tag_url')
         debug = bool(self.request.get('debug'))  # anything True, blank char False
 
-        debug = True  # add debug mode
+        # debug = True  # add debug mode
         debug_url = "http://movie.douban.com/tag/%E7%A7%91%E5%B9%BB?start=%s&type=T"
-
-        assert debug or (kind != "" and tag_url_2 != "")
-
         url = None
         if debug:
             kind = "movie"
             url = debug_url
         else:
             url = tag_url_2
+
+        assert debug or (kind != "" and tag_url_2 != "")
 
         try:
             response = requests.get(url, headers=MOCK_IE_HTTP_HEADER, timeout=HTTP_TIMIOUT)
@@ -189,7 +185,7 @@ class TagURLHandler(webapp2.RequestHandler):
             for resource_url in resource_url_list:
                 try:
                     ndb = DoubanResourceURL(kind=kind, resource_url=resource_url)
-                    # TODO duplication check by memcache&Resource_URL table
+                    # FIXME duplication check by memcache&Resource_URL table
                     if is_duplicated:
                         continue
                     ndb.put()
@@ -202,7 +198,8 @@ class TagURLHandler(webapp2.RequestHandler):
                     taskqueue.add(queue_name='DoubanResourceQueue', url='/douban/resource', method="GET",
                                   params={"kind": kind, "resource_url": resource_url})
                 except BaseException as ex:
-                    logging.error("push %s to [DoubanResourceQueue] failed: %s" % (resource_url, ex))  # TODO is it possible in GAE?
+                    logging.error("push %s to [DoubanResourceQueue] failed: %s" % (
+                        resource_url, ex))  # TODO is it possible in GAE?
 
             self.response.status = 200
             return
