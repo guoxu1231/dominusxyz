@@ -31,7 +31,9 @@ import dominus.gae.image_upload_jfu
 import dominus.gae.image_upload
 from dominus.mongolab.mongolab_heartbeat import MongolabHeartbeatHandler
 from dominus.douban.douban_entity import NDBStoreHandler
-from dominus.douban.tag_traversal import LinkHandler
+from dominus.douban.douban_resource_traversal import ResourceURLHandler
+from dominus.douban.douban_resource_traversal import TagURLHandler
+from dominus.douban.douban_resource_traversal import CleanupHandler
 
 
 class MainHandler(webapp2.RequestHandler):
@@ -41,7 +43,9 @@ class MainHandler(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
-    ('/douban/link', LinkHandler),
+    ('/douban/resource', ResourceURLHandler),
+    ('/douban/tag', TagURLHandler),
+    ('/douban/cleanup', CleanupHandler),
     ('/coming_movie_v2', ComingMovieV2Handler),
     ('/calendar/delete', DeleteEventHandler),
     ('/calendar/insert', InsertEventHandler),

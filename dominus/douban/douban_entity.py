@@ -2,12 +2,12 @@ __author__ = 'shawguo'
 from google.appengine.ext import ndb
 import webapp2
 
-# Douban Movie model
-# http://developers.douban.com/wiki/?title=movie_v2#subject
-
 
 class DoubanMovie(ndb.Model):
-    # from movie page
+    """
+    Douban Movie model, from movie page
+        http://developers.douban.com/wiki/?title=movie_v2#subject
+    """
     id = ndb.StringProperty(required=True, indexed=True)
     title = ndb.StringProperty()
     aka = ndb.StringProperty()
@@ -28,13 +28,26 @@ class DoubanMovie(ndb.Model):
 
     @classmethod
     def _get_kind(cls):
-        return 'movie'
+        return 'douban_movie'
+
+
+class DoubanResourceURL(ndb.Model):
+    """
+    Movie/Book/Music URL
+    """
+    kind = ndb.StringProperty()
+    resource_url = ndb.StringProperty(indexed=True)
+    create_date = ndb.DateTimeProperty(auto_now_add=True)
+
+    @classmethod
+    def _get_kind(cls):
+        return 'douban_resource_url'
 
 
 class NDBStoreHandler(webapp2.RequestHandler):
     def get(self):
-        movie = DoubanMovie(id="123456")
-        # movie.id="123456"
+        movie = DoubanMovie()
+        movie.id = "123456"
         movie.title = "test movie"
 
         self.response.write(movie.put())
