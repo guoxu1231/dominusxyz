@@ -38,10 +38,25 @@ class DoubanResourceURL(ndb.Model):
     kind = ndb.StringProperty()
     resource_url = ndb.StringProperty(indexed=True)
     create_date = ndb.DateTimeProperty(auto_now_add=True)
+    is_debug = ndb.BooleanProperty(default=True)
 
     @classmethod
     def _get_kind(cls):
         return 'douban_resource_url'
+
+
+class DoubanTagURL(ndb.Model):
+    """
+    Movie/Book/Music Tag URL
+    """
+    kind = ndb.StringProperty()
+    tag_url = ndb.StringProperty(indexed=True)
+    create_date = ndb.DateTimeProperty(auto_now_add=True)
+    is_debug = ndb.BooleanProperty(default=True)
+
+    @classmethod
+    def _get_kind(cls):
+        return 'douban_tag_url'
 
 
 class NDBStoreHandler(webapp2.RequestHandler):
