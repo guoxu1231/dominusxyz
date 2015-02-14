@@ -3,34 +3,39 @@ __author__ = 'shawguo'
 import json
 import requests
 import logging
-
-# Rest API Wrapper for mongolab http://docs.mongolab.com/restapi/#create-collection
+import datetime
 
 
 class MongolabRestWrapper:
+    """
+    Rest API Wrapper for mongolab http://docs.mongolab.com/restapi/#create-collection
+    """
+
     API_KEY = "oFrccImwDd3wsKmHf4WWdkM9LVRqlRx_"
     HTTP_API_KEY = {"apiKey": API_KEY}
     HTTP_HEADERS = {"Content-Type": "application/json"}
+    HTTP_TIMIOUT = 20  # seconds
 
     def __init__(self):
         return
 
-    '''
-    Mongolab Rest API Wrapper for insert documents
-    docPath = "database.collection"
-    doc = python dictionary representation of json-document.
-    sample url https://api.mongolab.com/api/1/databases/my-db/collections/my-coll?apiKey=myAPIKey
-    '''
+    def insert_document(self, doc_path, doc):
+        """
+        Mongolab Rest API Wrapper for insert documents
+        docPath = "database.collection"
+        doc = python dictionary representation of json-document.
+        sample url https://api.mongolab.com/api/1/databases/my-db/collections/my-coll?apiKey=myAPIKey
+        """
+        assert len(doc_path.split(".")) == 2
 
-    def insert_document(self, docPath, doc):
-        assert len(docPath.split(".")) == 2
-
-        rest_url = "https://api.mongolab.com/api/1/databases/%s/collections/%s" % tuple(docPath.split("."))
+        rest_url = "https://api.mongolab.com/api/1/databases/%s/collections/%s" % tuple(doc_path.split("."))
         # TODO network timeout
-        response = requests.post(rest_url, params=self.HTTP_API_KEY, headers=self.HTTP_HEADERS, timeout=5,
+        response = requests.post(rest_url, params=self.HTTP_API_KEY, headers=self.HTTP_HEADERS,
+                                 timeout=self.HTTP_TIMIOUT,
                                  data=json.dumps(doc))
-        logging.info("(insert_document)Request URL: %s" % response.url)
-        print True if response.status_code == 200 or response.status_code == 201 else False
+        logging.debug("(insert_document)Request URL: %s" % response.url)
+        #  return response.json()
+        return True if response.status_code == 200 or response.status_code == 201 else False
 
     '''
     Mongolab Rest API Wrapper for List documents
@@ -44,10 +49,10 @@ class MongolabRestWrapper:
         l=<limit> - specify the limit for the number of results (default is 1000)
     '''
 
-    def list_documents(self, docPath, q=None, c=False, f=None, fo=None, s=None, sk=None, l=None):
-        assert len(docPath.split(".")) == 2
+    def list_documents(self, doc_path, q=None, c=False, f=None, fo=None, s=None, sk=None, l=None):
+        assert len(doc_path.split(".")) == 2
 
-        rest_url = "https://api.mongolab.com/api/1/databases/%s/collections/%s" % tuple(docPath.split("."))
+        rest_url = "https://api.mongolab.com/api/1/databases/%s/collections/%s" % tuple(doc_path.split("."))
 
         # Send the request.
         send_kwargs = {}
@@ -63,18 +68,19 @@ class MongolabRestWrapper:
 
         # send_kwargs.
         # TODO network timeout
-        response = requests.get(rest_url, params=send_kwargs, headers=self.HTTP_HEADERS, timeout=5)
-        logging.info("(list_documents)Request URL: %s" % response.url)
+        response = requests.get(rest_url, params=send_kwargs, headers=self.HTTP_HEADERS, timeout=self.HTTP_TIMIOUT)
+        logging.debug("(list_documents)Request URL: %s" % response.url)
         print("Request URL: %s" % response.url)
         return response.json()
 
      # def delete_document
 
+MONGOLAB_REST_WRAPPER = MongolabRestWrapper()
 
 def main():
-    helper = MongolabRestWrapper()
-    # helper.insert_document("shawguo.movie_event", {"name": "shawguo", "movie_data": "today"})
-    print helper.list_documents("shawguo.movie_event",q={"name":"shawguo"},f={"name":1})
+    # helper = MongolabRestWrapper()
+    print MONGOLAB_REST_WRAPPER.insert_document("shawguo.movie_event", {"name": "shawguo1", "movie_data": "today","sysdate":{"$date":datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")}})
+    # print helper.list_documents("shawguo.movie_event",q={"name":"shawguo"},f={"name":1})
 
 if __name__ == "__main__":
     main()
