@@ -7,6 +7,7 @@ class DoubanMovie(ndb.Model):
     """
     Douban Movie model, from movie page
         http://developers.douban.com/wiki/?title=movie_v2#subject
+
     """
     id = ndb.StringProperty(required=True, indexed=True)
     title = ndb.StringProperty()
@@ -34,11 +35,15 @@ class DoubanMovie(ndb.Model):
 class DoubanResourceURL(ndb.Model):
     """
     Movie/Book/Music URL
+
+    Datastore Quota:
+        New Entity Put (per entity, regardless of entity size): 2 writes + 2 writes per indexed property value +
+        1 write per composite index value
     """
-    kind = ndb.StringProperty()
-    resource_url = ndb.StringProperty(indexed=True)
-    create_date = ndb.DateTimeProperty(auto_now_add=True)
-    is_debug = ndb.BooleanProperty(default=True)
+    kind = ndb.StringProperty(indexed=False)
+    resource_url = ndb.StringProperty(indexed=False)  # FIXME should be indexed but disabled to avoid too many index write
+    create_date = ndb.DateTimeProperty(auto_now_add=True, indexed=False)
+    is_debug = ndb.BooleanProperty(default=True, indexed=False)
 
     @classmethod
     def _get_kind(cls):

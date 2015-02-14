@@ -20,6 +20,9 @@ class TagEntryHandler(webapp2.RequestHandler):
         enqueue all tag url to TagURLHandler
     Requrired HTTP Params:
         tag_entry_url = http://movie.douban.com/tag/%E7%A7%91%E5%B9%BB
+        kind = movie/book/music
+    Example URL
+        http://dominusxyz.appspot.com/douban/entry?kind=movie&tag_entry_url=http%3A%2F%2Fmovie.douban.com%2Ftag%2F%25E7%25A7%2591%25E5%25B9%25BB
     Design:
         well-formed website convention over smart crawler
         douban tag & paginator convention
@@ -45,7 +48,7 @@ class TagEntryHandler(webapp2.RequestHandler):
         else:
             url = tag_entry_url
 
-        assert debug_url or (kind != "" and tag_entry_url != "")
+        assert debug or (kind != "" and tag_entry_url != "")
 
         try:
             response = requests.get(url, headers=MOCK_IE_HTTP_HEADER, timeout=HTTP_TIMIOUT)
@@ -190,7 +193,15 @@ class TagURLHandler(webapp2.RequestHandler):
                         continue
                     ndb.put()
                 except BaseException as ex:
-                    logging.error("Write %s to the datastore error - %s" % (ndb, ex))  # TODO is it possible in GAE?
+                    logging.error("Write %s to the datastore error - %s" % (ndb, ex))
+                    # FIXME
+                    # suspended generator put(context.py:810) raised OverQuotaError(The API call
+                    # datastore_v3.Put() required more quota than is available.)
+
+                    # Write DoubanResourceURL(key=Key('douban_resource_url', None),
+                    # create_date=datetime.datetime(2015, 2, 13, 14, 30, 13, 867490),
+                    # is_debug=True, kind=u'movie', resource_url=u'http://movie.douban.com/subject/1949528/')
+                    # to the datastore error - The API call datastore_v3.Put() required more quota than is available.
 
             # enqueue push queue
             for resource_url in resource_url_list:

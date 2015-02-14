@@ -11,7 +11,7 @@ from lxml import etree
 from google.appengine.api import taskqueue
 from dominus.google_api import get_google_calendar_service
 from dominus.google_api import DOUBAN_CALENDAR_ID
-from dominus.douban.tag_traversal import link_enqueue
+from dominus.douban.douban_resource_traversal import link_enqueue
 
 
 # ComingMovieV2Handler

@@ -33,6 +33,7 @@ from dominus.mongolab.mongolab_heartbeat import MongolabHeartbeatHandler
 from dominus.douban.douban_entity import NDBStoreHandler
 from dominus.douban.douban_resource_traversal import ResourceURLHandler
 from dominus.douban.douban_resource_traversal import TagURLHandler
+from dominus.douban.douban_resource_traversal import TagEntryHandler
 from dominus.douban.douban_resource_traversal import CleanupHandler
 
 
@@ -45,6 +46,7 @@ app = webapp2.WSGIApplication([
     ('/', MainHandler),
     ('/douban/resource', ResourceURLHandler),
     ('/douban/tag', TagURLHandler),
+    ('/douban/entry', TagEntryHandler),
     ('/douban/cleanup', CleanupHandler),
     ('/coming_movie_v2', ComingMovieV2Handler),
     ('/calendar/delete', DeleteEventHandler),
