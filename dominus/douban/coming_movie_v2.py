@@ -216,10 +216,10 @@ class DeleteEventHandler(webapp2.RequestHandler):
         total_event = self.request.get('total_event')
         nth_event = int(self.request.get('nth_event')) + 1
         # noinspection PyBroadException
+        logging.info("deleting event[total(%s)/(%sth)]: %s_%s", total_event, nth_event,
+                     (event['summary'] if 'summary' in event else "(No Title)"), event['id'])
         try:
             service.events().delete(calendarId=DOUBAN_CALENDAR_ID, eventId=event['id']).execute()
-            logging.info("deleting event[total(%s)/(%sth)]: %s_%s", total_event, nth_event,
-                     (event['summary'] if 'summary' in event else "(No Title)"), event['id'])
             self.response.status = 200  # 200 OK
         except BaseException as e:
             logging.error("DeleteEventHandler excepion: %s" % e)  # TODO
@@ -235,12 +235,10 @@ class InsertEventHandler(webapp2.RequestHandler):
         total_event = self.request.get('total_event')
         nth_event = int(self.request.get('nth_event')) + 1
 
+        logging.info("inserting event[total(%s)/(%sth)]: %s", total_event, nth_event, event["summary"])
         # noinspection PyBroadException
         try:
-            created_event = google_calednar_service.events().insert(calendarId=DOUBAN_CALENDAR_ID,
-                                                                    body=event).execute()
-            logging.info("inserting event[total(%s)/(%sth)]: %s_%s", total_event, nth_event,
-                         created_event['id'], created_event["summary"])
+            created_event = google_calednar_service.events().insert(calendarId=DOUBAN_CALENDAR_ID, body=event).execute()
             self.response.status = 200  # 200 OK
         except BaseException as e:
             logging.error("InsertEventHandler excepion: %s" % e)  # TODO The API call urlfetch.Fetch() took too long to respond and was cancelled.
