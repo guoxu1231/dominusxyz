@@ -7,10 +7,12 @@ import requests
 from lxml import etree
 from dominus.douban.douban_entity import DoubanResourceURL
 from dominus.douban.douban_entity import DoubanMovie
+from dominus.mongolab.mongolab_rest_wrapper import MONGOLAB_REST_WRAPPER
 import re
 
 MOCK_IE_HTTP_HEADER = {}  # TODO
 HTTP_TIMIOUT = 20  # 20 seconds
+DATASTORE_CHOICE = {"gae": False, "mongolab": True}
 
 
 class TagEntryHandler(webapp2.RequestHandler):
@@ -186,22 +188,29 @@ class TagURLHandler(webapp2.RequestHandler):
             is_duplicated = False
             ndb = None
             for resource_url in resource_url_list:
-                try:
-                    ndb = DoubanResourceURL(kind=kind, resource_url=resource_url)
-                    # FIXME duplication check by memcache&Resource_URL table
-                    if is_duplicated:
-                        continue
-                    ndb.put()
-                except BaseException as ex:
-                    logging.error("Write %s to the datastore error - %s" % (ndb, ex))
-                    # FIXME
-                    # suspended generator put(context.py:810) raised OverQuotaError(The API call
-                    # datastore_v3.Put() required more quota than is available.)
+                if DATASTORE_CHOICE['gae']:
+                    try:
+                        ndb = DoubanResourceURL(kind=kind, resource_url=resource_url)
+                        # FIXME duplication check by memcache&Resource_URL table
+                        if is_duplicated:
+                            continue
+                        ndb.put()
+                    except BaseException as ex:
+                        logging.error("Write %s to the datastore error - %s" % (ndb, ex))
+                        # FIXME
+                        # suspended generator put(context.py:810) raised OverQuotaError(The API call
+                        # datastore_v3.Put() required more quota than is available.)
 
-                    # Write DoubanResourceURL(key=Key('douban_resource_url', None),
-                    # create_date=datetime.datetime(2015, 2, 13, 14, 30, 13, 867490),
-                    # is_debug=True, kind=u'movie', resource_url=u'http://movie.douban.com/subject/1949528/')
-                    # to the datastore error - The API call datastore_v3.Put() required more quota than is available.
+                        # Write DoubanResourceURL(key=Key('douban_resource_url', None),
+                        # create_date=datetime.datetime(2015, 2, 13, 14, 30, 13, 867490),
+                        # is_debug=True, kind=u'movie', resource_url=u'http://movie.douban.com/subject/1949528/')
+                        # to the datastore error - The API call datastore_v3.Put() required more quota than is available.
+                elif DATASTORE_CHOICE['mongolab']:
+                    try:
+                        print "d"
+                    except:
+                        print 'hl'
+
 
             # enqueue push queue
             for resource_url in resource_url_list:
@@ -220,9 +229,10 @@ class TagURLHandler(webapp2.RequestHandler):
             return
 
 
-def link_enqueue(kind, url):
+def movie_url_enqueue(kind, url):
     try:
-        taskqueue.add(queue_name='DoubanResourceQueue', url='/douban/resource', params={'kind': kind, "url": url})
+        taskqueue.add(queue_name='DoubanResourceQueue', url='/douban/resource', method="GET",
+                      params={'kind': kind, "resource_url": url, 'tag': 'movie'})
     except BaseException as ex:
         logging.warning("push %s to [DoubanLinkQueue] failed: %s" % (url, ex))
         return False
@@ -237,10 +247,86 @@ class ResourceURLHandler(webapp2.RequestHandler):
         # payload
         resource_url = self.request.get('resource_url')
         kind = self.request.get('kind')
+        tag = self.request.get('tag')
 
+        assert resource_url is not None and resource_url != ""
         logging.debug("[ResourceURLHandler]_[%s]_%s" % (kind, resource_url))
+
+        if kind == 'movie':
+            movie = DoubanMovie()
+            movie.id = int(re.search('start=(\d+)&type=T', resource_url).group(1))
+            xpath_extract_movie(movie, resource_url)
+            logging.info("[Douban Movie] :%s" % movie)
+
         self.response.status = 200  # 200 OK
 
 
+def xpath_extract_movie(movie, resource_url):
+    """
 
-        # TODO xpath_extract
+    :param movie:
+    :param resource_url:
+    :return: None = Fatal error
+    """
+    try:
+        response = requests.get(resource_url, headers=MOCK_IE_HTTP_HEADER, timeout=HTTP_TIMIOUT)
+    except BaseException as e:
+        logging.error("get douban url %s failed %s" % (resource_url, e))
+        return None
+
+    if response.status_code == requests.codes.ok:
+        encoding = response.encoding
+        text = response.text
+
+        try:
+            parser = etree.HTMLParser(recover=True, encoding=encoding)
+            tree = etree.fromstring(text, parser)
+        except BaseException as ex:
+            logging.error("get douban url %s failed %s" % (resource_url, ex))
+            return None
+
+        #debug
+        # print tree.xpath("/html/body//div[@class='subject-others-interests-ft']/a[1]")[0].text
+
+        try:
+            movie.title = tree.xpath("/html/body/div[@id='wrapper']/div[@id='content']/h1/span[1]")[0].text
+        except BaseException as e:
+            movie.sys_debug_msg += "movie.title!!!%s\n" % e
+        try:
+            movie.year = re.search("\((\d+)\)",tree.xpath("/html/body/div[@id='wrapper']/div[@id='content']/h1/span[2]")[0].text).group(1)
+        except BaseException as e:
+            movie.sys_debug_msg += "movie.year!!!%s\n" % e
+        try:
+            movie.average_rating = float(tree.xpath("/html/body/div[@id='wrapper']//div[@class='rating_wrap clearbox']//strong[@class='ll rating_num']")[0].text)
+        except BaseException as e:
+            movie.sys_debug_msg += "movie.average_rating!!!%s\n" % e
+        try:
+            movie.ratings_count = int(tree.xpath("/html/body//div[@class='rating_wrap clearbox']/p[2]/a/span[@property='v:votes']")[0].text)
+        except BaseException as e:
+            movie.sys_debug_msg += "movie.average_rating!!!%s\n" % e
+        try:
+            movie.wish_count = int(re.search("(\d+).*",tree.xpath("/html/body//div[@class='subject-others-interests-ft']/a[1]")[0].text).group(1)) #FIXME regex
+        except BaseException as e:
+            movie.sys_debug_msg += "movie.wish_count!!!%s\n" % e
+        try:
+            movie.collect_count = int(re.search("(\d+).*",tree.xpath("/html/body//div[@class='subject-others-interests-ft']/a[2]")[0].text).group(1)) #FIXME regex
+        except BaseException as e:
+            movie.sys_debug_msg += "movie.collect_count!!!%s\n" % e
+
+    else:
+        return False
+
+
+def main():
+    movie = DoubanMovie()
+    resource_url = "http://movie.douban.com/subject/1652587/"
+    movie.id = re.search('subject\/(\d+)\/', resource_url).group(1)
+    xpath_extract_movie(movie, resource_url)
+
+    print movie
+
+
+
+
+if __name__ == "__main__":
+    main()

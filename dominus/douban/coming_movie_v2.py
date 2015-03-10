@@ -11,7 +11,7 @@ from lxml import etree
 from google.appengine.api import taskqueue
 from dominus.google_api import get_google_calendar_service
 from dominus.google_api import DOUBAN_CALENDAR_ID
-from dominus.douban.douban_resource_traversal import link_enqueue
+from dominus.douban.douban_resource_traversal import movie_url_enqueue
 
 
 # ComingMovieV2Handler
@@ -94,7 +94,7 @@ class ComingMovieV2Handler(webapp2.RequestHandler):
                                            nth_event=success_event):
                     success_event += 1
 
-                link_enqueue("movie", movie_link)
+                movie_url_enqueue("movie", movie_link)
 
                 self.response.write(new_movie_date)
                 self.response.write("        ")
