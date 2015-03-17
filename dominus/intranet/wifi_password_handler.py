@@ -13,7 +13,13 @@ class WifiPasswordHandler(webapp2.RequestHandler):
     """
 
     def get(self):
-        print ''
+        q = ndb.gql("SELECT * FROM wifi_password order by create_date desc limit 1")
+
+        for p in q:
+            self.response.write(p.password)
+        self.response.status = 200
+
+        return
 
     def post(self):
         password = self.request.get('wifi_password')
