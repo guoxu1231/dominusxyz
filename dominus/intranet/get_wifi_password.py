@@ -7,6 +7,10 @@ import requests
 
 class WifiPost:
     """
+        install required module: requests:
+            sudo -i
+            exprot <http/https proxy>
+            easy_install requests
     """
 
     def __init__(self):
@@ -23,7 +27,7 @@ class WifiPost:
             print "Script Usage: python2.7 get_wifi_password.py <sso_username> <password>"
             return
 
-        print "Script Parameters: %s, %s" % (sys.argv[1], sys.argv[2])
+        print "Script Parameters: %s %s" % (sys.argv[1], '\n')
 
         # post form sso/auth_cred_submit
         headers = {
@@ -72,28 +76,23 @@ class WifiPost:
 
         if 'captcha/files/airespace_pwd_apac.txt' in r.url:  # successful redirect
 
-            for line in string.split(r.text, '\n'):
+            for line in string.split(r.text, '\n'):  # extract password from response
                 if 'Password:' in line:
                     password = string.strip(string.lstrip(line, 'Password:'))
                     print "Wifi Password:%s%s" % (password, '\n')
 
             print r.text
 
+            # write to /tmp/intranet_wifi.txt
+            open('/tmp/intranet_wifi.txt','w').write(password)
             return password
 
         else:
             print 'Error'
 
-            # password =
-
-
-
-
-            # extract password from response
-
 
 def main():
-    WifiPost.get_wifi_password()
+    return WifiPost.get_wifi_password()
 
     # longStr = "This is a very long string " \
     # "that I wrote to help somebody " \
