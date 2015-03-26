@@ -3,6 +3,7 @@ __author__ = 'shawguo'
 import webapp2
 from google.appengine.ext import ndb
 import logging
+import urllib
 
 
 class WifiPasswordHandler(webapp2.RequestHandler):
@@ -14,6 +15,12 @@ class WifiPasswordHandler(webapp2.RequestHandler):
 
     def get(self):
         q = ndb.gql("SELECT * FROM wifi_password order by create_date desc limit 1")
+
+        # cookies analytics
+        cookies = self.request.headers.get("Cookie")
+        if cookies is not None:
+            cookies = urllib.unquote(cookies).decode('utf8')
+            logging.info("[Cookies Analytics] " + cookies)
 
         for p in q:
             self.response.write(p.password)
