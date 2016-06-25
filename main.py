@@ -35,6 +35,7 @@ from dominus.douban.douban_resource_traversal import ResourceURLHandler
 from dominus.douban.douban_resource_traversal import TagURLHandler
 from dominus.douban.douban_resource_traversal import TagEntryHandler
 from dominus.douban.douban_resource_traversal import CleanupHandler
+from dominus.intranet.wifi_password_handler import WifiPasswordHandler
 
 
 class MainHandler(webapp2.RequestHandler):
@@ -44,6 +45,8 @@ class MainHandler(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
+    ('/intranet/wifi_password', WifiPasswordHandler),
+    ('/clearguest', WifiPasswordHandler),
     ('/douban/resource', ResourceURLHandler),
     ('/douban/tag', TagURLHandler),
     ('/douban/entry', TagEntryHandler),
