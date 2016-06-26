@@ -36,7 +36,7 @@ from dominus.douban.douban_resource_traversal import TagURLHandler
 from dominus.douban.douban_resource_traversal import TagEntryHandler
 from dominus.douban.douban_resource_traversal import CleanupHandler
 from dominus.intranet.wifi_password_handler import WifiPasswordHandler
-
+from dominus.travis.request_handler import TravisHttpPropertiesHandler
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
@@ -65,5 +65,6 @@ app = webapp2.WSGIApplication([
     ('/gae/upload_form_pld', FileUploadFormHandler),
     ('/gae/image_upload_pld', FileUploadHandler),
     ('/gae/file/([0-9]+)/success', AjaxSuccessHandler),
-    ('/gae/generate_upload_url', GenerateUploadUrlHandler)  # plupload
+    ('/gae/generate_upload_url', GenerateUploadUrlHandler),  # plupload
+    ('/travis', TravisHttpPropertiesHandler)  # plupload
 ], debug=True)
